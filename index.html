@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#111111">
+  <link rel="icon" href="static/favicon_kwenniecheng.png" sizes="32x32" type="image/png">
+  <title>Age of leaders</title>
+  <meta name="description" content="Scrollytelling chart of the lifespan and time in power of every current national leader.">
+
+  <link rel="stylesheet" href="style.css">
+
+  <!-- Preload first frames only; the rest are lazy -->
+  <link rel="preload" as="image" href="static/background.webp" type="image/webp">
+  <link rel="preload" as="image" href="static/layer-1-far.webp" type="image/webp">
+  <link rel="preload" as="image" href="static/1.webp" type="image/webp">
+  <link rel="preload" as="image" href="static/2.webp" type="image/webp">
+</head>
+<body>
+  <a class="skip-link" href="#methodology">Skip to methodology</a>
+
+  <!-- Shown by story.js if a CSV fails to load -->
+  <div id="load-error" class="load-error" role="alert" hidden></div>
+
+  <noscript>
+    <p class="load-error">This interactive story needs JavaScript to draw the chart.</p>
+  </noscript>
+
+  <!-- Cover: full-screen header with parallax layers (cover.js). Scrolls away with the page -->
+  <header id="cover" class="cover">
+    <!-- Parallax layers, back to front. All 3200x1800, transparent WebP, same canvas.
+         data-speed: how far a layer lags behind the scroll (0 = moves with the page).
+         Far layers lag most, the front layer moves with the page. -->
+    <div class="cover__layers" aria-hidden="true">
+      <img class="cover__layer" data-speed="0.40" src="static/layer-1-far.webp"   alt="" width="3200" height="1800" decoding="async" fetchpriority="high">
+      <img class="cover__layer" data-speed="0.25" src="static/layer-2-mid.webp"   alt="" width="3200" height="1800" decoding="async">
+      <img class="cover__layer" data-speed="0.12" src="static/layer-3-near.webp"  alt="" width="3200" height="1800" decoding="async">
+    </div>
+    <div class="cover__text">
+      <h1 class="cover__title">Age of leaders</h1>
+      <p class="cover__lead">A recurring theme among world leaders. But Trump and Putin are not the oldest men leading their nations. How exceptional is it to hold the highest office when well over the retirement age?</p>
+      <p class="cover__cue" aria-hidden="true">Scroll ↓</p>
+    </div>
+  </header>
+
+  <main>
+    <!-- ========== STORY ========== -->
+    <section id="story" class="story" aria-label="Interactive story: lifespan and time in power of current leaders">
+
+      <!-- Sticky full-viewport wrapper; the 9:16 stage sits centred inside -->
+      <div class="stage-sticky">
+        <div id="stage" class="stage">
+
+          <!-- Intro artwork, 1080x1920. Order = storyboard 1A,1B,2A,2B,3A,3B,4A,4B 
+          <div id="frames" class="stage__frames" aria-hidden="true">
+            <img data-frame="1A" src="static/1.webp" alt="" width="1080" height="1920" decoding="async" fetchpriority="high">
+            <img data-frame="1B" src="static/2.webp" alt="" width="1080" height="1920" decoding="async">
+            <img data-frame="2A" src="static/3.webp" alt="" width="1080" height="1920" loading="lazy" decoding="async">
+            <img data-frame="2B" src="static/4.webp" alt="" width="1080" height="1920" loading="lazy" decoding="async">
+            <img data-frame="3A" src="static/5.webp" alt="" width="1080" height="1920" loading="lazy" decoding="async">
+            <img data-frame="3B" src="static/6.webp" alt="" width="1080" height="1920" loading="lazy" decoding="async">
+            <img data-frame="4A" src="static/7.webp" alt="" width="1080" height="1920" loading="lazy" decoding="async">
+            <img data-frame="4B" src="static/8.webp" alt="" width="1080" height="1920" loading="lazy" decoding="async">
+          </div>-->
+
+          <!-- All bars, axis, legend and info label are drawn here by chart.js -->
+          <svg id="chart-svg" class="stage__svg" viewBox="0 0 1080 1920"
+               preserveAspectRatio="xMidYMid meet" role="img"
+               aria-label="Chart: one row per current national leader, showing lifespan so far and years in power, coloured by political regime."></svg>
+
+          <!-- Search (shown together with the legend) -->
+          <div id="search" class="search" role="search">
+            <input id="search-input" class="search__input" type="search"
+                   placeholder="Search by country or name" autocomplete="off" spellcheck="false"
+                   role="combobox" aria-expanded="false" aria-controls="search-list"
+                   aria-autocomplete="list" aria-label="Search by country or leader name">
+            <ul id="search-list" class="search__list" role="listbox" hidden></ul>
+          </div>
+
+          <!-- Sprite characters (decorative) -->
+          <div id="person-top" class="person person--top" aria-hidden="true"><div class="person__sprite"></div></div>
+          <div id="person-doumbouya" class="person" aria-hidden="true"><div class="person__sprite"></div></div>
+          <div id="person-putin" class="person" aria-hidden="true"><div class="person__sprite"></div></div>
+          <div id="person-trump" class="person" aria-hidden="true"><div class="person__sprite"></div></div>          
+          <div id="person-bottom" class="person person--bottom" aria-hidden="true"><div class="person__sprite"></div></div>
+
+          <!-- Screen-reader announcement of the active leader in flicker mode -->
+          <p id="info-live" class="visually-hidden" aria-live="polite" aria-atomic="true"></p>
+        </div>
+      </div>
+
+      <!-- Scroll steps: they scroll OVER the sticky stage.
+           data-pos: "above" = text sits above the bar (B steps), "below" = below the bar (A steps), "center" = middle.
+           Edit the copy freely; keep data-step values unchanged. -->
+      <div id="steps" class="steps">
+        <div class="step" data-step="1A" data-pos="below">
+          <div class="step__inner"><p class="step__text"><span class="step__id">1A</span>In the spring of 1990 a boy named Balendra Shah was born in the centre of Kathmandu, Nepal. </p></div>
+        </div>
+
+        <div class="step" data-step="1B" data-pos="above">
+          <div class="step__inner"><p class="step__text"><span class="step__id">1B</span>Far away from this all, 57 year old Paul Biya was leading Cameroon for 7.5 years already. </p></div>
+        </div>
+
+        <div class="step" data-step="2A" data-pos="below">
+          <div class="step__inner"><p class="step__text"><span class="step__id">2A</span>Three decades later Balendra Shah, or Balen as many would call him, first became an engineer, a rapper on the side and got elected mayor of Kathmandu at age 32.</p></div>
+        </div>
+
+        <div class="step" data-step="2B" data-pos="above">
+          <div class="step__inner"><p class="step__text"><span class="step__id">2B</span>Meanwhile, Paul Biya was still in power and serving his seventh term.</p></div>
+        </div>
+
+        <div class="step" data-step="3A" data-pos="below">
+          <div class="step__inner"><p class="step__text"><span class="step__id">3A</span>Four years later, Balen resigned to become prime minister of Nepal.</p></div>
+        </div>
+
+        <div class="step" data-step="3B" data-pos="above">
+          <div class="step__inner"><p class="step__text"><span class="step__id">3B</span>Almost 6 months earlier, Biya got re-elected for an eighth term.</p></div>
+        </div>
+
+        <div class="step" data-step="4A" data-pos="below">
+          <div class="step__inner"><p class="step__text"><span class="step__id">4A</span>The age difference between these two is clear: Balen knows how to reach Nepalis through his millions of followers on social media.</p></div>
+        </div>
+
+        <div class="step" data-step="4B" data-pos="above">
+          <div class="step__inner"><p class="step__text"><span class="step__id">4B</span>Biya on the other hand can barely be reached at all. Rumours fly around on his health or if he’s even alive at all and he vanishes abroad for stretches of time.</p></div>
+        </div>
+
+        <div class="step" data-step="5A" data-pos="below">
+          <div class="step__inner"><p class="step__text"><span class="step__id">5A</span> One thing they do have in common: they’re both current country leaders. One the youngest and the other one the oldest. These bars represent their life.</p></div>
+        </div>
+
+        <div class="step" data-step="5AA" data-pos="below">
+          <div class="step__inner"><p class="step__text"><span class="step__id">5AA</span>The line on the left side of the bar represent the day they were born</p></div>
+        </div>
+
+        <div class="step" data-step="5AAA" data-pos="below">
+          <div class="step__inner"><p class="step__text"><span class="step__id">5AAA</span>the whole bar their entire lifespan</p></div>
+        </div>
+
+        <div class="step" data-step="5AAAA" data-pos="below">
+          <div class="step__inner"><p class="step__text"><span class="step__id">5AAAA</span>and the dark part of the bar their tenure as country leader.</p></div>
+        </div>
+
+        <div class="step" data-step="5AB" data-pos="above">
+          <div class="step__inner"><p class="step__text"><span class="step__id">5AB</span>While Biya’s tenure consists of consecutive re-elections, some have gaps. Undoubtedly the two most famous ones being Vladimir Putin and Donald Trump.</p></div>
+        </div>        
+
+        <div class="step" data-step="5B" data-pos="above">
+          <div class="step__inner"><p class="step__text"><span class="step__id">5B</span>Balen and Trump lead a <span class="tag tag--democracy">democratic</span> country,  Biya and Putin an <span class="tag tag--electoral">electoral authoritarian</span> regime.</p></div>
+        </div>
+
+        <div class="step" data-step="5BB" data-pos="above">
+          <div class="step__inner"><p class="step__text"><span class="step__id">5BB</span>There are also <span class="tag tag--autocracy">authoritarian</span> countries, such as Guinea. Mamady Doumbouya is the interim president of his country since the military coup in 2021.</p></div>
+        </div>
+
+        <!-- Tall step: story.js reads scroll progress inside it to unfold the rows -->
+        <div class="step step--tall" data-step="6" data-pos="above">
+          <div class="step__inner"><p class="step__text"><span class="step__id">6</span>These are (almost) all current country leaders, when they were born and their tenure.</p></div>
+          <div class="step__end"><p class="step__text step__text--end">Scroll down to learn more</p></div>
+        </div>
+
+        <!-- Flicker mode: empty scroll range; story.js sets its height from CONFIG -->
+        <div id="flicker-track" class="flicker-track" data-step="flicker"></div>
+      </div>
+    </section>
+
+    <!-- ========== NORMAL FLOW, after the sticky stage is released ========== -->
+    <section id="methodology" class="prose" aria-labelledby="method-title">
+      <p><b>Sources</b>
+      Pew Research Center, V-Dem</p><br>
+      <p class="'sub"><b>About the data</b></p>
+      <p>Data on birthdates is based on the analysis of Pew Research Center. Their analysis focuses mostly on heads of government as defined by a country’s political system or constitution. They excluded six UN member states because their leader’s exact birth date could not be determined: Afghanistan, Guinea-Bissau, Madagascar, Niger, Sao Tome and Principe, and Somalia. They also excluded San Marino, which is led by two captains regent who share power equally. To learn more about their methodology, <a href="https://www.pewresearch.org/short-reads/2026/06/09/as-trump-turns-80-who-are-the-oldest-and-youngest-current-world-leaders/#:~:text=About%20this%20research">click here</a>.</p>
+      <p>Years in power are calculated from the start of the current tenure to today's date. Where a leader had earlier tenures, the total is shown in brackets.</p>
+      <p>Data provided by Pew Research Center is based on the ages of the leaders as of June 14, 2026. I have updated this dataset as of 2nd November 2026 using regional news articles of the following countries: Serbia, XXXX. All ages and current heads of states are thus as of 2nd November 2026.</p>
+      <p>Regime types come from the V-Dem regime classification. For readability purposes I have combined their disctinction between an electoral and liberal democracy into one category 'democracy', though I awknowledge important details are lost due to this choice.</a></p><br>
+      <p class="'sub"><b>AI usage</b></a></p>
+      <p>AI was used for the development of the scrollytelling, including generating the data visualisations. All design choices have been made entirely without AI. Research, text and data updates have also been done without the use of AI. </p>
+    </section>
+
+    <section id="credits" class="prose" aria-labelledby="credits-title">
+      <h2 id="credits-title">Credits</h2>
+      <p>Concept, illustration, research: <a href='https://kwenniecheng.github.io/portfolio/index.html' target='_blank'>Kwennie Cheng</a> </p>
+    </section>
+  </main>
+
+<a id="jump-down" class="jump-down" href="#methodology" aria-label="Skip to methodology">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+       stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M5 9l7 7 7-7"/>
+  </svg>
+</a>
+  <script>
+    /* Show the jump button from step 6 (the full chart) until the methodology appears */
+    (function () {
+      var btn = document.getElementById("jump-down");
+      var step6 = document.querySelector('.step[data-step="6"]');
+      var track = document.getElementById("flicker-track");
+      var method = document.getElementById("methodology");
+      if (!btn || !step6 || !track || !method || !("IntersectionObserver" in window)) return;
+
+      var in6 = false, inTrack = false, methodShown = false;
+      function update() { btn.classList.toggle("is-visible", (in6 || inTrack) && !methodShown); }
+
+      // "Covers the top edge of the viewport" = a thin strip at the top of the screen
+      var topStrip = { rootMargin: "0px 0px -98% 0px" };
+
+      new IntersectionObserver(function (entries) {
+        in6 = entries[entries.length - 1].isIntersecting;
+        update();
+      }, topStrip).observe(step6);
+
+      new IntersectionObserver(function (entries) {
+        inTrack = entries[entries.length - 1].isIntersecting;
+        update();
+      }, topStrip).observe(track);
+
+      // as soon as any part of the methodology is on screen
+      new IntersectionObserver(function (entries) {
+        methodShown = entries[entries.length - 1].isIntersecting;
+        update();
+      }).observe(method);
+    })();
+  </script>
+
+  <!-- Pinned CDN versions. Order matters: d3 -> scrollama -> chart -> story -->
+  <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/scrollama@3.2.0/build/scrollama.min.js" defer></script>
+  <script src="chart.js" defer></script>
+  <script src="story.js" defer></script>
+  <script src="cover.js" defer></script>
+</body>
+</html>

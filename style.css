@@ -1,0 +1,563 @@
+/* =========================================================
+   style.css - layout, variables, visibility states.
+   Mobile-first; breakpoints use min-width.
+   ========================================================= */
+
+/* ---------- Variables (tweak here) ---------- */
+:root {
+  /* Colours (regime colours live in chart.js CONFIG.colours; .tag--* below) */
+  --page-bg: #e9e8e2;          /* empty space left/right of the stage on desktop */
+  --stage-bg: #e9e8e2;         /* stage background (behind transparent images) */
+  --ink: #141414;              /* main text */
+  --ink-soft: #55554f;         /* secondary text, axis */
+  --grid: #d6d5cd;            /* axis lines */
+  --panel-bg: rgba(247, 247, 244, 0.88); /* text panel over artwork */
+  --focus: #5379cf;
+
+  /* Viewport height basis: vh fallback, dvh where supported */
+  --vh-basis: 100vh;
+
+  /* Stage geometry: 9:16 box, height = viewport, width capped at 100vw */
+  --stage-w: min(100vw, calc(var(--vh-basis) * 9 / 16));
+  --stage-h: calc(var(--stage-w) * 16 / 9);
+
+  /* Text column: always 9:16, even when the stage is wider on desktop */
+  --col-w: min(100vw, calc(var(--vh-basis) * 9 / 16));
+  --col-h: calc(var(--col-w) * 16 / 9);
+
+  /* Person size, in % of stage width (story.js sets this from CONFIG) */
+  --person-w: 28;
+
+  /* Tall step 6 / flicker heights (story.js overrides from CONFIG) */
+  --step6-h: 300vh;
+  --flicker-h: 300vh;
+
+  --font: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+@supports (height: 100dvh) {
+  :root {
+    --vh-basis: 100dvh;
+    --step6-h: 300dvh;
+    --flicker-h: 300dvh;
+  }
+}
+
+/* Desktop: the stage uses more of the screen. 1.6 = max width as a multiple of the height. */
+@media (min-width: 900px) {
+  :root {
+    --stage-w: min(100vw, calc(var(--vh-basis) * 1.6));
+    --stage-h: var(--vh-basis);
+  }
+}
+
+/* ---------- Base ---------- */
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--page-bg);
+  color: var(--ink);
+  font-family: var(--font);
+  line-height: 1.5;
+  overflow-x: clip;            /* clip (not hidden) so position: sticky keeps working */
+  -webkit-font-smoothing: antialiased;
+}
+
+img { display: block; max-width: 100%; }
+
+a { color: inherit; text-underline-offset: 0.18em; }
+
+:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+}
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px; height: 1px;
+  margin: -1px; padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link {
+  position: fixed;
+  top: 0.5rem; left: 0.5rem;
+  z-index: 100;
+  padding: 0.5rem 0.75rem;
+  background: var(--ink);
+  color: #fff;
+  border-radius: 4px;
+  transform: translateY(-200%);
+}
+.skip-link:focus { transform: none; }
+
+/* ---------- Load error ---------- */
+.load-error {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 90;
+  margin: 0;
+  padding: 0.9rem 1rem;
+  background: #7a1f3d;
+  color: #fff;
+  font-size: 0.95rem;
+  text-align: center;
+}
+.load-error[hidden] { display: none; }
+
+/* ---------- Story wrapper ---------- */
+.story {
+  position: relative;
+  overflow-x: clip;
+}
+
+/* Sticky full-viewport wrapper, stage centred inside */
+.stage-sticky {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  height: 100vh;
+  height: 100dvh;
+  display: grid;
+  place-items: center;
+  background: var(--page-bg);
+  overflow: hidden;
+}
+
+/* ---------- Stage (9:16 box) ---------- */
+.stage {
+  position: relative;
+  width: var(--stage-w);
+  height: var(--stage-h);
+  background: var(--stage-bg);
+  background-image: url("static/background.webp");   /* your image */
+  background-size: cover;                             /* fills the stage on mobile and desktop */
+  background-position: 50% 50%;                       /* e.g. 50% 100% to anchor the bottom */
+  overflow: hidden;
+  container-type: size;
+  isolation: isolate;
+}
+
+/* Artwork frames: stacked, opacity driven by story.js (style.opacity) */
+.stage__frames {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  transition: opacity 0.3s ease;
+}
+.stage__frames img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  opacity: 0;
+  will-change: opacity;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+/* Frame 1A visible by default until JS takes over */
+.stage__frames img[data-frame="1A"] { opacity: 1; }
+
+/* SVG layer, same 1080x1920 coordinates as the artwork */
+.stage__svg {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  display: block;
+  overflow: hidden;
+}
+
+/* SVG parts drawn by chart.js */
+.stage__svg .bar { shape-rendering: crispEdges; }
+.stage__svg .bar--birth { shape-rendering: geometricPrecision; }
+.stage__svg .row { transition: none; }          /* opacity is set per frame by JS */
+.stage__svg .axis line,
+.stage__svg .axis path { stroke: var(--grid); stroke-width: 1; }
+.stage__svg .axis--grid line {
+  stroke: #a9a79c;
+  stroke-width: 1;
+}
+.stage__svg .axis text {
+  fill: var(--ink-soft);
+  font-family: var(--font);
+  font-size: 22px;             /* SVG units (1080 wide) */
+}
+.stage__svg .axis--labels text { fill: var(--ink); font-weight: 400; }
+.stage__svg .legend text {
+  fill: var(--ink);
+  font-family: var(--font);
+  font-size: 22px;
+}
+
+/* ---------- Persons (sprites) ----------
+   --x and --y are set by story.js in stage-width percent (cqw).
+   The anchor point is bottom-centre (the feet).
+   The sprite image and opacity are set by story.js.            */
+.person {
+  position: absolute;
+  left: 0; top: 0;
+  z-index: 3;
+  width: calc(var(--person-w) * 1cqw);
+  transform: translate3d(
+    calc(var(--x, 0) * 1cqw - 50%),
+    calc(var(--y, 0) * 1cqw - 100%),
+    0
+  );
+  will-change: transform, opacity;
+  pointer-events: none;
+}
+
+.person__sprite {
+  width: 100%;
+  aspect-ratio: 2 / 3;                 /* frame is 400x600 */
+  background-repeat: no-repeat;
+  background-size: 600% 300%;          /* 6 columns x 3 rows */
+  background-position: 0% 0%;          /* story.js changes this per frame */
+  transform: scaleX(var(--flip, 1));   /* --flip: -1 mirrors the sprite */
+}
+
+/* ---------- Search (inside the stage, under the legend) ---------- */
+.search {
+  position: absolute;
+  left: 0; top: 0;                 /* story.js sets the real position */
+  z-index: 5;
+  width: clamp(240px, 38cqw, 420px);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;            /* story.js switches these on with the legend */
+}
+.search__input {
+  width: 100%;
+  height: calc(var(--bar-h, 48) * 100cqw / 1080);
+  padding: 0 12px;
+  font-family: var(--font);
+  font-size: max(14px, 2cqw);              /* 16px avoids the iOS zoom on focus */
+  color: var(--ink);
+  background: #fff;
+  border: 1px solid var(--grid);
+  border-radius: 6px;
+}
+.search__input:focus,
+.search__input:focus-visible {
+  outline: none;
+  border-color: var(--ink);
+}
+
+/* Desktop: a normal, browser-sized search field instead of stage-scaled */
+@media (min-width: 900px) {
+  .search {
+    width: 280px;                /* fixed size, not 38cqw */
+  }
+  .search__input {
+    height: 36px;                /* fixed, replaces calc(var(--bar-h) * 100cqw / 1080) */
+    padding: 0 10px;
+    font-size: 14px;             /* fixed, replaces max(14px, 2cqw) */
+    border-radius: 4px;
+  }
+  .search__list {
+    max-height: 240px;           /* dropdown no longer scales with the stage either */
+  }
+  .search__opt,
+  .search__none {
+    padding: 6px 10px;
+    font-size: 14px;
+  }
+  .search__opt small {
+    font-size: 12px;
+  }
+}
+
+.search__list {
+  list-style: none;
+  margin: 4px 0 0;
+  padding: 4px 0;
+  max-height: min(320px, 45cqh);
+  overflow-y: auto;
+  background: #fff;
+  border: 1px solid var(--grid);
+  border-radius: 6px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+}
+.search__list[hidden] { display: none; }
+.search__opt, .search__none { padding: 8px 12px; font-size: 15px; line-height: 1.25; }
+.search__opt { cursor: pointer; }
+.search__opt small { display: block; color: var(--ink-soft); font-size: 13px; }
+.search__opt:hover,
+.search__opt[aria-selected="true"] { background: #ecebe4; }
+.search__none { color: var(--ink-soft); }
+
+/* Stage modes (data-mode set by story.js): intro | chart | flicker.
+   Artwork frames are hidden once the chart takes over. */
+.stage[data-mode="chart"] .stage__frames,
+.stage[data-mode="flicker"] .stage__frames { opacity: 0; }
+
+/* ---------- Steps (scroll over the sticky stage) ---------- */
+.steps {
+  position: relative;
+  z-index: 2;
+  margin-top: -100vh;
+  margin-top: -100dvh;         /* pull steps up over the sticky stage */
+  pointer-events: none;        /* stage stays visible/touchable underneath */
+}
+
+.step {
+  position: relative;
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+}
+
+/* Inner box has exactly the stage size, so data-pos maps to stage percentages */
+.step__inner {
+  position: relative;
+  width: var(--col-w);
+  height: var(--col-h);
+}
+
+.step__text {
+  position: absolute;
+  left: 6%;
+  right: 6%;
+  margin: 0;
+  padding: 0.85rem 1rem;
+  background: var(--panel-bg);
+  color: var(--ink);
+  border-radius: 6px;
+  font-size: clamp(0.75rem, calc(var(--col-w) * 0.032), 1.35rem);
+  line-height: 1.4;
+  opacity: 0.35;
+  transition: opacity 0.3s ease;
+}
+.step.is-active .step__text { opacity: 1; }
+
+/* Vertical text position; adjust to sit clear of the bars */
+.step[data-pos="above"]  .step__text { top: 12%; }
+.step[data-pos="below"]  .step__text { top: 60%; }
+.step[data-pos="center"] .step__text { top: 42%; }
+
+/* Intro A steps: the persons now sit in the middle of the stage, so the text goes lower,
+   clear of the bar and its timeline. Steps 5A.. keep the default "below" position. */
+.step[data-step="1A"][data-pos="below"] .step__text,
+.step[data-step="2A"][data-pos="below"] .step__text,
+.step[data-step="3A"][data-pos="below"] .step__text,
+.step[data-step="4A"][data-pos="below"] .step__text { top: 68%; }
+
+/* Small step id, useful while editing copy; hide with .step__id { display:none } */
+.step__id {
+  display: none;
+  margin-right: 0.6em;
+  padding: 0 0.4em;
+  border-radius: 3px;
+  background: var(--ink);
+  color: #fff;
+  font-size: 0.7em;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  vertical-align: 0.1em;
+}
+
+/* Coloured inline labels in the copy */
+.tag {
+  padding: 0.05em 0.4em;
+  border-radius: 3px;
+  color: #fff;
+  font-weight: 600;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;      /* keeps the label look if the phrase wraps to two lines */
+}
+.tag--democracy { background: #5379CF; }
+.tag--electoral { background: #CFA953; }
+.tag--autocracy { background: #CF5387; }
+
+/* Tall step 6: text pins while the rows unfold */
+.step--tall {
+  height: var(--step6-h);
+  display: block;
+}
+.step--tall .step__inner {
+  position: sticky;
+  top: calc((100vh - var(--col-h)) / 2);
+  top: calc((100dvh - var(--col-h)) / 2);
+  margin-inline: auto;
+}
+.step__end {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: var(--col-w);
+  height: 100vh;
+  height: 100dvh;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 8%;
+}
+.step__text--end {
+  position: static;
+  left: auto; right: auto;
+  opacity: 1;
+  text-align: center;
+  font-weight: 600;
+}
+
+/* Flicker range: empty, JS sets the height from CONFIG */
+.flicker-track {
+  height: var(--flicker-h);
+}
+
+/* ---------- Normal-flow sections after the story ---------- */
+.prose {
+  position: relative;
+  z-index: 3;
+  padding: 3.5rem 1.25rem;
+  font-size: 0.7rem;               /* was 0.8rem */
+  background: var(--stage-bg);
+}
+.prose > * {
+  max-width: 40rem;
+  margin-inline: auto;
+}
+.prose h2 {
+  margin-top: 0;
+  margin-bottom: 0.15rem;          /* was 0.75rem: text sits directly under the heading */
+  font-size: 1em;
+  font-weight: 700;
+  line-height: 1.5;
+}
+.prose p { margin-top: 0; margin-bottom: 1rem; }
+.prose p.sub { margin-bottom: 0.15rem; }   /* bold sub-heading, text follows directly */
+.prose p.sub + p { margin-top: 0; }
+
+
+/* ---------- Breakpoints ---------- */
+@media (min-width: 768px) {
+  .step__text { padding: 1rem 1.25rem; }
+  .prose { padding: 5rem 2rem; }
+}
+
+@media (min-width: 1200px) {
+  .prose { font-size: 0.8rem; }
+}
+
+/* ---------- Cover (full-screen title) ---------- */
+.cover {
+  --cw: var(--col-w);              /* text sizes follow the column width */
+  position: relative;             /* normal flow: scrolls away with the page */
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  /* Same grain background as the stage, behind the transparent layers */
+  background: var(--page-bg) url("static/background.webp") center / cover no-repeat;
+  --focus-x: 50%;                  /* which part of the wide layers stays visible on mobile: 0% = left edge, 100% = right edge */
+}
+.cover__layers {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.cover__layer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;               /* fills the screen, crops the sides on mobile */
+  object-position: var(--focus-x) 50%;   /* same for every layer, so they stay aligned */
+  will-change: transform;          /* cover.js moves the layers on scroll */
+  user-select: none;
+  -webkit-user-drag: none;
+}
+.cover__text {
+  position: absolute;
+  inset: 0;                        /* fill the whole cover */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;         /* vertical centre */
+  align-items: center;             /* horizontal centre */
+  text-align: center;              /* centre the text lines themselves */
+  padding: 0 calc((100vw - var(--cw)) / 2 + var(--cw) * 0.07);
+  background: none;
+  color: whitesmoke;
+  text-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.6),
+    0 2px 12px rgba(0, 0, 0, 0.5);                 
+}
+.cover__title {
+  margin: 0 0 calc(var(--cw) * 0.03);
+  font-size: calc(var(--cw) * 0.10);
+  line-height: 1.05;
+}
+.cover__lead {
+  margin: 0;
+  font-size: calc(var(--cw) * 0.032);
+  line-height: 1.35;
+}
+.cover__cue {
+  margin: calc(var(--cw) * 0.05) 0 0;
+  font-size: calc(var(--cw) * 0.028);
+  font-weight: 600;
+  opacity: 0.8;
+}
+
+/* ---------- Jump-to-methodology button ---------- */
+.jump-down {
+  position: fixed;
+  right: max(1rem, env(safe-area-inset-right, 0px));
+  bottom: max(1rem, env(safe-area-inset-bottom, 0px));
+  z-index: 50;
+  width: 24px;
+  height: 24px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: rgba(20, 20, 20, 0.20);
+  color: #fff;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
+
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(8px);
+  transition: opacity 0.4s ease, transform 0.4s ease, background 0.2s ease, visibility 0s linear 0.4s;
+}
+.jump-down.is-visible {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  transition-delay: 0s;
+}
+.jump-down:hover { background: var(--ink); }
+.jump-down svg {
+  width: 16px;
+  height: 16px;
+  animation: jump-nudge 2s ease-in-out infinite;   /* gentle bob that hints "scroll down" */
+}
+@keyframes jump-nudge {
+  0%, 100% { transform: translateY(-1px); }
+  50%      { transform: translateY(2px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .jump-down svg { animation: none; }
+}
+
+/* ---------- Reduced motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
