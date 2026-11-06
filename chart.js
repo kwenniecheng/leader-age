@@ -18,8 +18,8 @@
     colours: {
       autocracy: "#f38094",
       electoral_autocracy: "#f9ed43",
-      electoral_democracy: "#e4eced",
-      liberal_democracy: "#e4eced",
+      electoral_democracy: "#a5c8d1",
+      liberal_democracy: "#a5c8d1",
       unknown: "#70727c"
     },
     fallbackColour: "#70727c",   // unrecognised vdem value (+ console warning)
