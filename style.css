@@ -8,7 +8,7 @@
   /* Colours (regime colours live in chart.js CONFIG.colours; .tag--* below) */
   --page-bg: #e9e8e2;          /* empty space left/right of the stage on desktop */
   --stage-bg: #e9e8e2;         /* stage background (behind transparent images) */
-  --ink: #141414;              /* main text */
+  --ink: #121315;              /* main text */
   --ink-soft: #55554f;         /* secondary text, axis */
   --grid: #d6d5cd;            /* axis lines */
   --panel-bg: rgba(247, 247, 244, 0.88); /* text panel over artwork */
