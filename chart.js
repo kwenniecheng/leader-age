@@ -16,13 +16,13 @@
 
     // Regime colours (faded and solid parts share the same colour)
     colours: {
-      autocracy: "#f38094",
-      electoral_autocracy: "#f9ed43",
-      electoral_democracy: "#a5c8d1",
-      liberal_democracy: "#a5c8d1",
-      unknown: "#70727c"
+      autocracy: "#dd4127",
+      electoral_autocracy: "#f99d1c",
+      electoral_democracy: "#005b8d",
+      liberal_democracy: "#005b8d",
+      unknown: "#c1ae92"
     },
-    fallbackColour: "#70727c",   // unrecognised vdem value (+ console warning)
+    fallbackColour: "#c1ae92",   // unrecognised vdem value (+ console warning)
     neutralColour: "#121315",    // bars before they are colour-coded (steps 1A-5A)
 
     // Legend entries: label + key into colours
