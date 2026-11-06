@@ -379,9 +379,9 @@ a { color: inherit; text-underline-offset: 0.18em; }
   -webkit-box-decoration-break: clone;
   box-decoration-break: clone;      /* keeps the label look if the phrase wraps to two lines */
 }
-.tag--democracy { background: #a5c8d1; }
-.tag--electoral { background: #f9ed43; }
-.tag--autocracy { background: #f38094; }
+.tag--democracy { background: #005b8d; }
+.tag--electoral { background: #f99d1c; }
+.tag--autocracy { background: #dd4127; }
 
 /* Tall step 6: text pins while the rows unfold */
 .step--tall {
