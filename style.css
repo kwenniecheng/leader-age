@@ -452,6 +452,11 @@ a { color: inherit; text-underline-offset: 0.18em; }
   .prose { padding: 5rem 2rem; }
 }
 
+/* Desktop: smaller callout text (mobile keeps the clamp above) */
+@media (min-width: 900px) {
+  .step__text { font-size: clamp(0.75rem, calc(var(--col-w) * 0.032), 1.05rem); }
+}
+
 @media (min-width: 1200px) {
   .prose { font-size: 0.8rem; }
 }
