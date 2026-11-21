@@ -374,14 +374,15 @@ a { color: inherit; text-underline-offset: 0.18em; }
 .tag {
   padding: 0.05em 0.4em;
   border-radius: 3px;
-  color: #fff;
+  color: var(--ink);                /* dark text: the regime colours are light */
   font-weight: 600;
   -webkit-box-decoration-break: clone;
   box-decoration-break: clone;      /* keeps the label look if the phrase wraps to two lines */
 }
-.tag--democracy { background: #005b8d; }
-.tag--electoral { background: #f99d1c; }
-.tag--autocracy { background: #dd4127; }
+.tag--democracy { background: #84875e; }           /* electoral democracy */
+.tag--liberal   { background: #a5c8d1; }           /* liberal democracy */
+.tag--electoral { background: #ffefae; }           /* electoral autocracy */
+.tag--autocracy { background: #f58e84; }
 
 /* Tall step 6: text pins while the rows unfold */
 .step--tall {

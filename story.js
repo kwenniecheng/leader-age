@@ -724,9 +724,9 @@ if (key !== p.key) {
   // Below the legend, aligned with its left edge (stage units -> cqw)
   function positionSearch() {
     if (!searchEl) return;
-    const k = 100 / LC.VIEW.w, L = LC.CONFIG.legend;
+    const k = 100 / LC.VIEW.w;
     searchEl.style.left = (LC.CONFIG.x.left * k) + "cqw";
-    searchEl.style.top = ((L.y + L.swatch + 18) * k) + "cqw";
+    searchEl.style.top = ((LC.getLegendBottom() + 18) * k) + "cqw";
   }
 
   // v = 0..1, same fade as the legend

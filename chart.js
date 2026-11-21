@@ -16,10 +16,10 @@
 
     // Regime colours (faded and solid parts share the same colour)
     colours: {
-      autocracy: "#dd4127",
-      electoral_autocracy: "#f99d1c",
-      electoral_democracy: "#005b8d",
-      liberal_democracy: "#005b8d",
+      autocracy: "#f58e84",
+      electoral_autocracy: "#ffefae",
+      electoral_democracy: "#84875e",
+      liberal_democracy: "#a5c8d1",
       unknown: "#c1ae92"
     },
     fallbackColour: "#c1ae92",   // unrecognised vdem value (+ console warning)
@@ -29,10 +29,11 @@
     legendItems: [
       { label: "Autocracy", key: "autocracy" },
       { label: "Electoral autocracy", key: "electoral_autocracy" },
-      { label: "Democracy", key: "electoral_democracy" },
+      { label: "Electoral democracy", key: "electoral_democracy" },
+      { label: "Liberal democracy", key: "liberal_democracy" },
       { label: "Unknown", key: "unknown" }
     ],
-    legend: { y: 52, swatch: 22, fontSize: 22 },
+    legend: { y: 52, swatch: 22, fontSize: 22, rowGap: 12 },   // wraps to a new row past the right margin
 
     // Stage coordinate system (same as the 1080x1920 artwork)
     view: { w: 1080, h: 1920 },
@@ -474,13 +475,24 @@
       return w || label.length * (L.fontSize * 0.56);
     };
 
-    let x = X0;
+    const maxX = BASE_W - X0;   // same margin on the right as on the left
+    let x = X0, y = L.y;
     CONFIG.legendItems.forEach(item => {
-      el(g, "rect", { x, y: L.y, width: L.swatch, height: L.swatch, rx: 3, fill: CONFIG.colours[item.key] });
-      const t = el(g, "text", { x: x + L.swatch + 8, y: L.y + L.swatch / 2, "dominant-baseline": "central" });
+      const t = el(g, "text", { "dominant-baseline": "central" });
       t.textContent = item.label;
-      x += L.swatch + 8 + measure(t, item.label) + 30;
+      const w = L.swatch + 8 + measure(t, item.label);
+      if (x > X0 && x + w > maxX) { x = X0; y += L.swatch + L.rowGap; }
+      el(g, "rect", { x, y, width: L.swatch, height: L.swatch, rx: 3, fill: CONFIG.colours[item.key] });
+      t.setAttribute("x", x + L.swatch + 8);
+      t.setAttribute("y", y + L.swatch / 2);
+      x += w + 30;
     });
+    S.legendBottom = y + L.swatch;
+  }
+
+  // Bottom edge of the legend in stage units (after wrapping)
+  function getLegendBottom() {
+    return S.legendBottom || (CONFIG.legend.y + CONFIG.legend.swatch);
   }
 
   // Positions the year lines and labels on the current x range
@@ -811,6 +823,7 @@
     CONFIG,
     VIEW,
     setViewWidth,
+    getLegendBottom,
     loadData,
     drawChart,
     setIntroState,
