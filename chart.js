@@ -16,10 +16,10 @@
 
     // Regime colours (faded and solid parts share the same colour)
     colours: {
-      autocracy: "#f58e84",
-      electoral_autocracy: "#ffefae",
-      electoral_democracy: "#84875e",
-      liberal_democracy: "#a5c8d1",
+      autocracy: "#b884ae",
+      electoral_autocracy: "#c09f2c",
+      electoral_democracy: "#008943",
+      liberal_democracy: "#005b8d",
       unknown: "#c1ae92"
     },
     fallbackColour: "#c1ae92",   // unrecognised vdem value (+ console warning)

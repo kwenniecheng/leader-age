@@ -379,10 +379,11 @@ a { color: inherit; text-underline-offset: 0.18em; }
   -webkit-box-decoration-break: clone;
   box-decoration-break: clone;      /* keeps the label look if the phrase wraps to two lines */
 }
-.tag--democracy { background: #84875e; }           /* electoral democracy */
-.tag--liberal   { background: #a5c8d1; }           /* liberal democracy */
-.tag--electoral { background: #ffefae; }           /* electoral autocracy */
-.tag--autocracy { background: #f58e84; }
+/* Text colour per tag for contrast: white on the dark greens/blues, ink on the lighter ones */
+.tag--democracy { background: #008943; color: #fff; }   /* electoral democracy */
+.tag--liberal   { background: #005b8d; color: #fff; }   /* liberal democracy */
+.tag--electoral { background: #c09f2c; }                /* electoral autocracy */
+.tag--autocracy { background: #b884ae; }
 
 /* Tall step 6: text pins while the rows unfold */
 .step--tall {
