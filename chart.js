@@ -10,8 +10,8 @@
   const CONFIG = {
     // File paths (relative, GitHub Pages safe)
     paths: {
-      leaders: "data/leaders_230926.csv",
-      previous: "data/previous_230926.csv"
+      leaders: "data/leaders_201126.csv",
+      previous: "data/previous_201126.csv"
     },
 
     // Regime colours (faded and solid parts share the same colour)
@@ -182,12 +182,15 @@
 
     const byId = new Map();
     const leaders = [];
+    const omitted = new Set();
 
     // -- leaders
     L.forEach((r, i) => {
       const ctx = "leaders row " + (i + 2) + ", id " + r.id;
       if (!r.id) { console.warn("[data] Missing id, row skipped (" + ctx + ")"); return; }
       if (byId.has(r.id)) { console.warn("[data] Duplicate id \"" + r.id + "\", later row skipped (" + ctx + ")"); return; }
+      // Leaders marked "omitted" in in_power_since are deliberately left out
+      if (r.in_power_since.toLowerCase() === "omitted") { omitted.add(r.id); return; }
 
       const birth = parseDate(r.birthdate, "birthdate", ctx);
       const start = parseDate(r.in_power_since, "in_power_since", ctx);
@@ -213,6 +216,7 @@
     // -- previous tenures
     P.forEach((r, i) => {
       const ctx = "previous row " + (i + 2) + ", id " + r.id;
+      if (omitted.has(r.id)) return;
       const ld = byId.get(r.id);
       if (!ld) { console.warn("[data] previous.id not found in leaders (" + ctx + ")"); return; }
       const s = parseDate(r.start, "start", ctx);

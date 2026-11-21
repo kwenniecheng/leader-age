@@ -1,0 +1,33 @@
+id,country,current_leader,start,end,notes,check,source,
+BTN,Bhutan,Tshering Tobgay,2013-07-27,2018-08-09,,x,https://www.himalmag.com/tshering-tobgay-bhutan-monarchy-democracy-climate-lhotshampa/,
+BRA,Brazil,Luiz Inácio Lula da Silva,2003-01-01,2011-01-01,,x,https://www.ftm.nl/tag/luiz-inacio-lula-da-silva-lula,
+COM,Comoros,Azali Assoumani,1999-04-30,2002-01-01,exact dates only through wiki,x,https://simple.wikipedia.org/wiki/Azali_Assoumani,https://pollsafrica.com/people/azali-assoumani-comoros
+COM,Comoros,Azali Assoumani,2002-05-26,2006-05-26,exact dates only through wiki,x,https://simple.wikipedia.org/wiki/Azali_Assoumani,https://pollsafrica.com/people/azali-assoumani-comoros
+COM,Comoros,Azali Assoumani,2016-05-26,2019-02-13,,x,https://www.electionguide.org/elections/id/3505/,
+COD,"Congo, Republic",Denis Sassou Nguesso,1979-02-08,1992-08-31,,x,,
+CZE,Czech Republic,Andrej Babiš,2017-12-06,2021-11-28,,x,https://www.globsec.org/who-we-are/our-people/andrej-babis,
+TLS,East Timor,José Ramos-Horta,2007-05-20,2012-05-20,,x,https://www.britannica.com/biography/Jose-Ramos-Horta,
+FJI,Fiji,Sitiveni Rabuka,1992-06-02,1999-05-19,,x,http://archive.ipu.org/parline-e/reports/arc/2109_92.htm,
+GHA,Ghana,John Mahama,2013-01-07,2017-01-06,"actually 24 july 2012 because predecessor died, but elections afterwards",x,https://presidency.gov.gh/biography/,
+GRC,Greece,Kyriakos Mitsotakis,2019-07-08,2023-05-25,brief interim because he didn't want to form coalition,x,https://www.primeminister.gr/en/the-prime-minister/kyriakos-mitsotakis,
+IRL,Ireland,Micheál Martin,2020-06-27,2022-12-17,,x,https://www.britannica.com/biography/Micheal-Martin,
+ISR,Israel,Benjamin Netanyahu,1996-06-18,1999-07-06,,x,https://en.idi.org.il/articles/64732,
+ISR,Israel,Benjamin Netanyahu,2009-03-31,2021-06-13,,x,https://www.britannica.com/biography/Benjamin-Netanyahu,
+JAM,Jamaica,Andrew Holness,2011-10-23,2012-01-05,,x,https://en.wikipedia.org/wiki/Andrew_Holness,
+KGZ,Kyrgyzstan,Sadyr Japarov,2020-10-15,2020-11-14,,x,https://www.theguardian.com/world/2020/oct/16/kyrgyzstan-parliament-confirms-sadyr-japarov-new-president,https://www.deccanherald.com/world/kyrgyz-pm-steps-down-as-acting-president-to-run-in-election-915662.html
+MWI,Malawi,Peter Mutharika,2014-05-31,2020-06-28,,x,https://www.bbc.com/news/world-africa-27648964,
+MHL,Marshall Islands,Hilda Heine,2016-01-28,2020-01-13,,x,https://marshallislandsjournal.com/hilda-emerges-rmi-president/,https://marshallislandsjournal.com/new-rmi-leaders-sworn-in/
+MUS,Mauritius,Navin Ramgoolam,1995-12-27,2000-09-16,,x,https://data.ipu.org/election-summary/HTML/2209_95.htm,
+MUS,Mauritius,Navin Ramgoolam,2005-07-05,2014-12-13,,x,https://mg.co.za/news/south-africa/2005-07-05-don-t-fear-change-says-new-mauritian-leader/,
+PAK,Pakistan,Shehbaz Sharif,2022-04-11,2023-08-14,,x,https://www.dw.com/en/pakistan-shahbaz-sharif-sworn-in-as-new-prime-minister/a-61431139,https://www.dawn.com/news/1770080
+POL,Poland,Donald Tusk,2007-11-16,2014-09-22,,x,https://www.rte.ie/news/2007/1116/96077-poland/,https://www.bbc.com/news/world-europe-29134990
+RUS,Russia,Vladimir Putin,1999-12-31,2008-05-07,,x,https://www.nytimes.com/2018/05/07/world/europe/putin-inauguration-russia-president.html,https://www.theguardian.com/world/2008/may/08/russia
+SVK,Slovakia,Robert Fico,2012-04-04,2018-03-22,,x,https://pressto.amu.edu.pl/index.php/pp/article/download/53396/44863,https://gfmag.com/news/slovakias-new-prime-minister-overshadowed-old-prime-minister/
+SVN,Slovenia,Janez Janša,2004-12-03,2008-11-21,,x,https://www.gov.si/en/state-authorities/prime-minister/janez-jansa/,
+SVN,Slovenia,Janez Janša,2012-02-10,2013-03-20,,x,https://www.gov.si/en/state-authorities/prime-minister/janez-jansa/,
+SVN,Slovenia,Janez Janša,2020-03-13,2022-06-01,,x,https://www.gov.si/en/state-authorities/prime-minister/janez-jansa/,
+SSD,South Sudan,Salva Kiir Mayardit,2005-07-30,2011-07-09,acting president of southern sudan,x,https://www.bbc.com/news/world-africa-12107760,
+BRN,Slovakia,Robert Fico,2006-07-04,2010-07-08,,x,https://pressto.amu.edu.pl/index.php/pp/article/download/53396/44863,
+CHE,Switzerland,Guy Parmelin,2021-01-01,2021-12-31,,x,https://www.admin.ch/en/federal-councillor-guy-parmelin,
+TTO,Trinidad and Tobago,Kamla Persad-Bissessar,2010-05-26,2015-09-09,,x,https://www.trinidadandtobagonews.com/blog/?p=3416,
+USA,United States,Donald Trump,2017-01-20,2021-01-20,,x,https://trumpwhitehouse.archives.gov/briefings-statements/the-inaugural-address/,https://www.war.gov/News/News-Stories/Article/Article/2477716/biden-harris-sworn-in-as-americas-new-leaders/
