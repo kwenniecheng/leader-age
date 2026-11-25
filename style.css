@@ -16,13 +16,16 @@
 
   /* Viewport height basis: vh fallback, dvh where supported */
   --vh-basis: 100vh;
+  /* Width basis for the 9:16 column: the SMALL viewport height (svh) where supported,
+     so the column does not change width while the mobile browser bars show/hide on scroll */
+  --w-basis: 100vh;
 
   /* Stage geometry: 9:16 box, height = viewport, width capped at 100vw */
-  --stage-w: min(100vw, calc(var(--vh-basis) * 9 / 16));
+  --stage-w: min(100vw, calc(var(--w-basis) * 9 / 16));
   --stage-h: calc(var(--stage-w) * 16 / 9);
 
   /* Text column: always 9:16, even when the stage is wider on desktop */
-  --col-w: min(100vw, calc(var(--vh-basis) * 9 / 16));
+  --col-w: min(100vw, calc(var(--w-basis) * 9 / 16));
   --col-h: calc(var(--col-w) * 16 / 9);
 
   /* Person size, in % of stage width (story.js sets this from CONFIG) */
@@ -41,6 +44,10 @@
     --step6-h: 300dvh;
     --flicker-h: 300dvh;
   }
+}
+
+@supports (height: 100svh) {
+  :root { --w-basis: 100svh; }
 }
 
 /* Desktop: the stage uses more of the screen. 1.6 = max width as a multiple of the height. */
@@ -67,6 +74,27 @@ body {
   line-height: 1.5;
   overflow-x: clip;            /* clip (not hidden) so position: sticky keeps working */
   -webkit-font-smoothing: antialiased;
+}
+
+/* Mobile: one fixed full-screen background image behind everything after the cover,
+   so there are no plain gaps left/right of the 9:16 column or behind the methodology.
+   (A fixed pseudo-element instead of background-attachment: fixed, which iOS ignores.) */
+@media (max-width: 899px) {
+  body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    height: 100lvh;               /* large viewport: still covers when the browser bars hide */
+    z-index: -1;
+    background: var(--page-bg) url("static/background.webp") center / cover no-repeat;
+    pointer-events: none;
+  }
+  .stage-sticky,
+  .stage,
+  .prose { background: transparent; }
 }
 
 img { display: block; max-width: 100%; }
