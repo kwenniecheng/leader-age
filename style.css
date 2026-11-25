@@ -16,16 +16,13 @@
 
   /* Viewport height basis: vh fallback, dvh where supported */
   --vh-basis: 100vh;
-  /* Width basis for the 9:16 column: the SMALL viewport height (svh) where supported,
-     so the column does not change width while the mobile browser bars show/hide on scroll */
-  --w-basis: 100vh;
 
   /* Stage geometry: 9:16 box, height = viewport, width capped at 100vw */
-  --stage-w: min(100vw, calc(var(--w-basis) * 9 / 16));
+  --stage-w: min(100vw, calc(var(--vh-basis) * 9 / 16));
   --stage-h: calc(var(--stage-w) * 16 / 9);
 
   /* Text column: always 9:16, even when the stage is wider on desktop */
-  --col-w: min(100vw, calc(var(--w-basis) * 9 / 16));
+  --col-w: min(100vw, calc(var(--vh-basis) * 9 / 16));
   --col-h: calc(var(--col-w) * 16 / 9);
 
   /* Person size, in % of stage width (story.js sets this from CONFIG) */
@@ -46,8 +43,17 @@
   }
 }
 
-@supports (height: 100svh) {
-  :root { --w-basis: 100svh; }
+/* Mobile: the stage fills the whole screen, whatever its size. The chart already adapts
+   to any aspect ratio (story.js fitView). On screens taller than 9:16 the 1080x1920 content
+   is centred vertically (SVG "meet"); --oy below keeps persons/search aligned with it.
+   The text column matches that content box. */
+@media (max-width: 899px) {
+  :root {
+    --stage-w: 100vw;
+    --stage-h: var(--vh-basis);
+    --col-w: 100vw;
+    --col-h: min(var(--vh-basis), calc(100vw * 16 / 9));
+  }
 }
 
 /* Desktop: the stage uses more of the screen. 1.6 = max width as a multiple of the height. */
@@ -93,7 +99,6 @@ body {
     pointer-events: none;
   }
   .stage-sticky,
-  .stage,
   .prose { background: transparent; }
 }
 
@@ -241,12 +246,16 @@ a { color: inherit; text-underline-offset: 0.18em; }
   width: calc(var(--person-w) * 1cqw);
   transform: translate3d(
     calc(var(--x, 0) * 1cqw - 50%),
-    calc(var(--y, 0) * 1cqw - 100%),
+    calc(var(--y, 0) * 1cqw + var(--oy) - 100%),
     0
   );
   will-change: transform, opacity;
   pointer-events: none;
 }
+/* Vertical offset of the 1080x1920 content inside a stage taller than 9:16 (0 otherwise) */
+.person,
+.search { --oy: max(0px, (100cqh - 100cqw * 1920 / 1080) / 2); }
+.search { margin-top: var(--oy); }
 
 .person__sprite {
   width: 100%;
@@ -491,7 +500,7 @@ a { color: inherit; text-underline-offset: 0.18em; }
 
 /* ---------- Cover (full-screen title) ---------- */
 .cover {
-  --cw: var(--col-w);              /* text sizes follow the column width */
+  --cw: min(100vw, calc(var(--vh-basis) * 9 / 16));   /* text sizes follow a 9:16 column width */
   position: relative;             /* normal flow: scrolls away with the page */
   height: 100vh;
   height: 100dvh;
